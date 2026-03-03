@@ -1,8 +1,8 @@
-# IP2026  
-**20220800 이지민**
+# IP2026
 
+### 20220800 | 이지민
 ---
-> 🔽 아래 항목을 클릭하면 펼쳐집니다.
+▶ 아래 항목을 클릭하면 펼쳐집니다.
 ---
 <details>
 <summary><b>📂 Tutorials (Click to expand)</b></summary>
