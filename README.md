@@ -4,11 +4,7 @@
 
 ---
 
-# 📘 Assignment Repository
-
-본 저장소는 IP2026 수업의 Tutorial 및 Homework 과제 제출용입니다.
-
-> ▶ 아래 항목을 클릭하면 펼쳐집니다.
+#> ▶ 아래 항목을 클릭하면 펼쳐집니다.
 
 ---
 
