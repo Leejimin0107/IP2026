@@ -3,7 +3,7 @@
 # 📘 Assignment Repository
 ---
 ## 📂 Tutorials
-- [Tutorial 1](./Tutorial1)
+- [Tutorial 1](./Tutorial1.ipynb)
 - [Tutorial 2](./Tutorial2)
 - [Tutorial 3](./Tutorial3)
 - [Tutorial 5](./Tutorial5)
