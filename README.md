@@ -9,7 +9,7 @@
 ---
 
 <details>
-<summary><b>📂 Tutorials</b></summary>
+<summary><b>📂과제</b></summary>
 
 <br>
 
