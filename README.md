@@ -27,11 +27,11 @@
 
 <br>
 
-- [Homework 1](./Homework1.ipynb)
-- [Homework 2](./Homework2.ipynb)
-- [Homework 3](./Homework3.ipynb)
-- [Homework 4](./Homework4.ipynb)
-- [Homework 5](./Homework5.ipynb)
+- [Homework 1]
+- [Homework 2]
+- [Homework 3]
+- [Homework 4]
+- [Homework 5]
 
 </details>
 
