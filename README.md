@@ -16,6 +16,12 @@
 - [Tutorial 1](./Tutorial1.ipynb)
 - [chap121](./chap121.ipynb)
 - [chap122](./chap122.ipynb)
+- [chap123](./chap123.ipynb)
+- [chap124](./chap124.ipynb)
+- [chap125](./chap125.ipynb)
+  
+
+
 
 
 </details>
