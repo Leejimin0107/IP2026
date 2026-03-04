@@ -16,12 +16,7 @@
 - [Tutorial 1](./Tutorial1.ipynb)
 - [chap121](./chap121.ipynb)
 - [chap122](./chap122.ipynb)
-- [Tutorial 2](./Tutorial2.ipynb)
-- [Tutorial 3](./Tutorial3.ipynb)
-- [Tutorial 5](./Tutorial5.ipynb)
-- [Tutorial 6](./Tutorial6.ipynb)
-- [Tutorial 7](./Tutorial7.ipynb)
-- [Tutorial 8](./Tutorial8.ipynb)
+
 
 </details>
 
