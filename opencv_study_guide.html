@@ -1,0 +1,1727 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenCV Python 시험 정리 🎯</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+  :root {
+    --bg: #0a0e1a;
+    --bg2: #111827;
+    --bg3: #1a2235;
+    --border: #2a3a5c;
+    --accent: #38bdf8;
+    --accent2: #818cf8;
+    --accent3: #34d399;
+    --accent4: #fb923c;
+    --accent5: #f472b6;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --code-bg: #0d1b2e;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* TOP HEADER */
+  .top-header {
+    background: linear-gradient(135deg, #0a0e1a 0%, #1a1040 50%, #0a1a2e 100%);
+    border-bottom: 2px solid var(--accent);
+    padding: 2rem 2rem 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 30px rgba(56,189,248,0.15);
+  }
+
+  .top-header h1 {
+    font-size: 1.6rem;
+    font-weight: 900;
+    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+  }
+
+  .top-header .subtitle {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    margin-top: 0.2rem;
+  }
+
+  .timer-bar {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 0.2rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* NAV */
+  .nav-tabs {
+    display: flex;
+    gap: 0.3rem;
+    padding: 0.8rem 2rem;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .nav-tab {
+    padding: 0.4rem 1rem;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 700;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+
+  .nav-tab:hover, .nav-tab.active {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+  }
+
+  /* MAIN LAYOUT */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem 4rem;
+  }
+
+  /* SECTIONS */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .chapter-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .chapter-num {
+    background: var(--accent);
+    color: #000;
+    font-weight: 900;
+    font-size: 0.85rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 6px;
+  }
+
+  .chapter-title {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--text);
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .card.highlight { border-left: 4px solid var(--accent); }
+  .card.warn { border-left: 4px solid var(--accent4); }
+  .card.tip { border-left: 4px solid var(--accent3); }
+  .card.important { border-left: 4px solid var(--accent5); }
+
+  .card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .card-title.green { color: var(--accent3); }
+  .card-title.orange { color: var(--accent4); }
+  .card-title.purple { color: var(--accent2); }
+  .card-title.pink { color: var(--accent5); }
+
+  /* CODE BLOCKS */
+  pre {
+    background: var(--code-bg);
+    border: 1px solid #1e3a5f;
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    overflow-x: auto;
+    margin: 0.7rem 0;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.83rem;
+    line-height: 1.6;
+    color: #a8daff;
+  }
+
+  .inline-code {
+    background: var(--code-bg);
+    border: 1px solid #1e3a5f;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.83rem;
+    color: #a8daff;
+  }
+
+  /* COMMENTS in code */
+  .cm { color: #64748b; }
+  .kw { color: #818cf8; }
+  .fn { color: #38bdf8; }
+  .str { color: #34d399; }
+  .num { color: #fb923c; }
+  .var { color: #e2e8f0; }
+  .output { color: #fbbf24; }
+
+  /* TWO COLUMN */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  /* TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.7rem 0;
+    font-size: 0.87rem;
+  }
+
+  th {
+    background: var(--bg3);
+    color: var(--accent);
+    padding: 0.6rem 0.8rem;
+    text-align: left;
+    font-weight: 700;
+    border: 1px solid var(--border);
+  }
+
+  td {
+    padding: 0.5rem 0.8rem;
+    border: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  tr:nth-child(even) td { background: rgba(26,34,53,0.5); }
+
+  /* EMPHASIS */
+  .em-box {
+    background: rgba(56,189,248,0.07);
+    border: 1px solid rgba(56,189,248,0.3);
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    margin: 0.5rem 0;
+  }
+
+  .warn-box {
+    background: rgba(251,146,60,0.08);
+    border: 1px solid rgba(251,146,60,0.3);
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+  }
+
+  .warn-box::before { content: "⚠️ "; }
+
+  /* LIST */
+  ul, ol {
+    padding-left: 1.3rem;
+  }
+
+  li { margin-bottom: 0.3rem; }
+
+  /* RESULT BOX */
+  .result-box {
+    background: #0d1b0d;
+    border: 1px solid #1a4d1a;
+    border-radius: 6px;
+    padding: 0.6rem 1rem;
+    margin-top: 0.5rem;
+  }
+
+  .result-box::before {
+    content: "▶ 실행결과: ";
+    color: var(--accent3);
+    font-weight: 700;
+    font-size: 0.8rem;
+  }
+
+  .result-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    color: #fbbf24;
+    margin-top: 0.3rem;
+  }
+
+  /* OVERVIEW GRID */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8rem;
+    margin: 1rem 0;
+  }
+
+  .overview-item {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .overview-item:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 15px rgba(56,189,248,0.1);
+  }
+
+  .overview-item .num {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    font-weight: 700;
+  }
+
+  .overview-item .title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-top: 0.3rem;
+  }
+
+  .overview-item .desc {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    margin-top: 0.2rem;
+  }
+
+  h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--accent2);
+    margin: 1rem 0 0.5rem;
+  }
+
+  p { margin-bottom: 0.5rem; }
+
+  @media (max-width: 768px) {
+    .two-col, .overview-grid { grid-template-columns: 1fr; }
+    .container { padding: 1rem; }
+    .top-header { padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-header">
+  <h1>📷 OpenCV-Python 영상처리 시험 정리</h1>
+  <div class="subtitle">시험 범위: 1.2.1~5 · 1.3.1~2 · 1.4.1~5,7,9 | 코드 + 실행결과 + 설명</div>
+  <div class="timer-bar">
+    <span class="badge">⏰ 시험: 3/25 16:00</span>
+    <span class="badge">📚 1.2 GUI Features</span>
+    <span class="badge">🔧 1.3 Core Operations</span>
+    <span class="badge">🖼️ 1.4 Image Processing</span>
+  </div>
+</div>
+
+<div class="nav-tabs">
+  <button class="nav-tab active" onclick="showSection('overview')">📋 전체 개요</button>
+  <button class="nav-tab" onclick="showSection('s121')">1.2.1 이미지 읽기/표시</button>
+  <button class="nav-tab" onclick="showSection('s122')">1.2.2 동영상</button>
+  <button class="nav-tab" onclick="showSection('s123')">1.2.3 그리기</button>
+  <button class="nav-tab" onclick="showSection('s124')">1.2.4 마우스</button>
+  <button class="nav-tab" onclick="showSection('s125')">1.2.5 트랙바</button>
+  <button class="nav-tab" onclick="showSection('s131')">1.3.1 기본연산</button>
+  <button class="nav-tab" onclick="showSection('s132')">1.3.2 산술연산</button>
+  <button class="nav-tab" onclick="showSection('s141')">1.4.1 색공간변환</button>
+  <button class="nav-tab" onclick="showSection('s142')">1.4.2 기하변환</button>
+  <button class="nav-tab" onclick="showSection('s143')">1.4.3 임계처리</button>
+  <button class="nav-tab" onclick="showSection('s144')">1.4.4 스무딩</button>
+  <button class="nav-tab" onclick="showSection('s145')">1.4.5 형태변환</button>
+  <button class="nav-tab" onclick="showSection('s147')">1.4.7 히스토그램</button>
+  <button class="nav-tab" onclick="showSection('s149')">1.4.9 템플릿/허프</button>
+</div>
+
+<div class="container">
+
+<!-- ===================== OVERVIEW ===================== -->
+<div id="overview" class="section active">
+  <div class="chapter-header">
+    <span class="chapter-num">전체</span>
+    <span class="chapter-title">시험 범위 한눈에 보기</span>
+  </div>
+
+  <div class="card highlight">
+    <div class="card-title">🎯 핵심 암기 포인트</div>
+    <ul>
+      <li><strong>함수명 정확히</strong> 쓰기 — cv2.imread, cv2.imshow, cv2.threshold 등</li>
+      <li><strong>인자 순서</strong> — 각 함수의 인자 순서와 의미</li>
+      <li><strong>실행 결과</strong> — 코드가 어떤 이미지/출력을 생성하는지</li>
+      <li><strong>플래그 값</strong> — cv2.IMREAD_COLOR(1), GRAYSCALE(0), 각종 THRESH 플래그</li>
+    </ul>
+  </div>
+
+  <div class="overview-grid">
+    <div class="overview-item" onclick="showSection('s121')">
+      <div class="num">1.2.1</div>
+      <div class="title">이미지 읽기/표시/저장</div>
+      <div class="desc">imread · imshow · imwrite · waitKey</div>
+    </div>
+    <div class="overview-item" onclick="showSection('s122')">
+      <div class="num">1.2.2</div>
+      <div class="title">동영상 처리</div>
+      <div class="desc">VideoCapture · VideoWriter · FourCC</div>
+    </div>
+    <div class="overview-item" onclick="showSection('s123')">
+      <div class="num">1.2.3</div>
+      <div class="title">도형 그리기</div>
+      <div class="desc">line · rectangle · circle · ellipse · putText</div>
+    </div>
+    <div class="overview-item" onclick="showSection('s124')">
+      <div class="num">1.2.4</div>
+      <div class="title">마우스 이벤트</div>
+      <div class="desc">setMouseCallback · EVENT_LBUTTONDBLCLK</div>
+    </div>
+    <div class="overview-item" onclick="showSection('s125')">
+      <div class="num">1.2.5</div>
+      <div class="title">트랙바</div>
+      <div class="desc">createTrackbar · getTrackbarPos</div>
+    </div>
+    <div class="overview-item" onclick="showSection('s131')">
+      <div class="num">1.3.1</div>
+      <div class="title">이미지 기본 연산</div>
+      <div class="desc">픽셀 접근 · ROI · split · merge · 패딩</div>
+    </div>
+    <div class="overview-item" onclick="showSection('s132')">
+      <div class="num">1.3.2</div>
+      <div class="title">산술 연산</div>
+      <div class="desc">add · addWeighted · 비트 연산</div>
+    </div>
+    <div class="overview-item" onclick="showSection('s141')">
+      <div class="num">1.4.1</div>
+      <div class="title">색공간 변환</div>
+      <div class="desc">cvtColor · BGR→HSV · 객체 추적</div>
+    </div>
+    <div class="overview-item" onclick="showSection('s142')">
+      <div class="num">1.4.2</div>
+      <div class="title">기하 변환</div>
+      <div class="desc">resize · warpAffine · warpPerspective · 회전</div>
+    </div>
+    <div class="overview-item" onclick="showSection('s143')">
+      <div class="num">1.4.3</div>
+      <div class="title">임계 처리</div>
+      <div class="desc">threshold · adaptiveThreshold · Otsu</div>
+    </div>
+    <div class="overview-item" onclick="showSection('s144')">
+      <div class="num">1.4.4</div>
+      <div class="title">이미지 스무딩</div>
+      <div class="desc">blur · GaussianBlur · medianBlur · bilateralFilter</div>
+    </div>
+    <div class="overview-item" onclick="showSection('s145')">
+      <div class="num">1.4.5</div>
+      <div class="title">형태 변환</div>
+      <div class="desc">erode · dilate · morphologyEx · 구조 요소</div>
+    </div>
+    <div class="overview-item" onclick="showSection('s147')">
+      <div class="num">1.4.7</div>
+      <div class="title">히스토그램</div>
+      <div class="desc">calcHist · equalizeHist · CLAHE · 역투영</div>
+    </div>
+    <div class="overview-item" onclick="showSection('s149')">
+      <div class="num">1.4.9</div>
+      <div class="title">템플릿 매칭 + 허프 변환</div>
+      <div class="desc">matchTemplate · HoughLines · HoughCircles</div>
+    </div>
+  </div>
+
+  <div class="card warn">
+    <div class="card-title orange">⚡ 자주 틀리는 포인트</div>
+    <ul>
+      <li>OpenCV는 <strong>BGR</strong> 순서 (RGB 아님!) — Matplotlib은 RGB 순서</li>
+      <li><span class="inline-code">cv2.add()</span>는 포화(255에서 막힘) ↔ numpy <span class="inline-code">+</span>는 모듈로(256으로 나눈 나머지)</li>
+      <li>64비트 PC에서 <span class="inline-code">waitKey(0) & 0xFF</span> 필요</li>
+      <li>Sobel 결과를 uint8로 바로 저장하면 음수 기울기(엣지) 손실 → CV_64F로 받고 절댓값 취한 후 uint8 변환</li>
+      <li>Otsu 임계처리: threshold value에 0 입력, <span class="inline-code">cv2.THRESH_OTSU</span> 플래그 추가</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===================== 1.2.1 ===================== -->
+<div id="s121" class="section">
+  <div class="chapter-header">
+    <span class="chapter-num">1.2.1</span>
+    <span class="chapter-title">Getting Started with Images — 이미지 읽기·표시·저장</span>
+  </div>
+
+  <div class="card highlight">
+    <div class="card-title">📌 핵심 함수</div>
+    <table>
+      <tr><th>함수</th><th>역할</th><th>주요 인자</th></tr>
+      <tr><td><code>cv2.imread(path, flag)</code></td><td>이미지 읽기</td><td>flag: 1=컬러, 0=그레이, -1=알파포함</td></tr>
+      <tr><td><code>cv2.imshow(winname, img)</code></td><td>창에 이미지 표시</td><td>winname: 창 이름 문자열</td></tr>
+      <tr><td><code>cv2.imwrite(filename, img)</code></td><td>이미지 저장</td><td>확장자로 포맷 결정</td></tr>
+      <tr><td><code>cv2.waitKey(delay)</code></td><td>키 입력 대기</td><td>0=무한대기, ms단위</td></tr>
+      <tr><td><code>cv2.destroyAllWindows()</code></td><td>모든 창 닫기</td><td>—</td></tr>
+      <tr><td><code>cv2.namedWindow(winname, flag)</code></td><td>창 미리 생성</td><td>WINDOW_NORMAL=크기조절 가능</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 완전한 예제 코드 (키 입력으로 저장/종료)</div>
+    <pre><code><span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> cv2
+
+img = cv2.<span class="fn">imread</span>(<span class="str">'messi5.jpg'</span>, <span class="num">0</span>)  <span class="cm"># 0 = 그레이스케일로 읽기</span>
+cv2.<span class="fn">imshow</span>(<span class="str">'image'</span>, img)
+k = cv2.<span class="fn">waitKey</span>(<span class="num">0</span>) <span class="cm"># 키 입력 무한 대기</span>
+
+<span class="kw">if</span> k == <span class="num">27</span>:           <span class="cm"># ESC 키 → 저장없이 종료</span>
+    cv2.<span class="fn">destroyAllWindows</span>()
+<span class="kw">elif</span> k == <span class="fn">ord</span>(<span class="str">'s'</span>):   <span class="cm"># 's' 키 → 저장 후 종료</span>
+    cv2.<span class="fn">imwrite</span>(<span class="str">'messigray.png'</span>, img)
+    cv2.<span class="fn">destroyAllWindows</span>()</code></pre>
+    <div class="result-box">
+      <div class="result-text">→ 그레이스케일로 messi5.jpg 이미지 창 출력<br>→ 's' 누르면 messigray.png 저장, ESC 누르면 그냥 종료</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card warn">
+      <div class="card-title orange">⚠️ imread 플래그</div>
+      <ul>
+        <li><code>cv2.IMREAD_COLOR</code> = <strong>1</strong> (기본값, 컬러)</li>
+        <li><code>cv2.IMREAD_GRAYSCALE</code> = <strong>0</strong></li>
+        <li><code>cv2.IMREAD_UNCHANGED</code> = <strong>-1</strong> (알파채널 포함)</li>
+      </ul>
+      <div class="warn-box">이미지 경로가 틀려도 에러 없이 None 반환!</div>
+    </div>
+    <div class="card tip">
+      <div class="card-title green">📊 Matplotlib로 표시</div>
+      <pre><code><span class="kw">import</span> cv2
+<span class="kw">from</span> matplotlib <span class="kw">import</span> pyplot <span class="kw">as</span> plt
+
+img = cv2.<span class="fn">imread</span>(<span class="str">'messi5.jpg'</span>, <span class="num">0</span>)
+plt.<span class="fn">imshow</span>(img, cmap=<span class="str">'gray'</span>,
+           interpolation=<span class="str">'bicubic'</span>)
+plt.<span class="fn">xticks</span>([]), plt.<span class="fn">yticks</span>([])
+plt.<span class="fn">show</span>()</code></pre>
+      <div class="warn-box">컬러이미지는 BGR→RGB 변환 필요!</div>
+    </div>
+  </div>
+
+  <div class="card important">
+    <div class="card-title pink">🔑 64비트 주의사항</div>
+    <p>64비트 머신에서는 waitKey 반환값이 64비트라 하위 8비트만 취해야 함:</p>
+    <pre><code>k = cv2.<span class="fn">waitKey</span>(<span class="num">0</span>) & <span class="num">0xFF</span>  <span class="cm"># 64비트 PC에서 필수!</span></code></pre>
+  </div>
+</div>
+
+<!-- ===================== 1.2.2 ===================== -->
+<div id="s122" class="section">
+  <div class="chapter-header">
+    <span class="chapter-num">1.2.2</span>
+    <span class="chapter-title">Getting Started with Videos — 동영상 처리</span>
+  </div>
+
+  <div class="card highlight">
+    <div class="card-title">📌 핵심 함수</div>
+    <table>
+      <tr><th>함수</th><th>역할</th></tr>
+      <tr><td><code>cv2.VideoCapture(source)</code></td><td>비디오 캡처 객체 생성 (0=웹캠, 파일명=동영상파일)</td></tr>
+      <tr><td><code>cap.read()</code></td><td>프레임 읽기 → (ret, frame) 반환</td></tr>
+      <tr><td><code>cap.isOpened()</code></td><td>캡처 초기화 확인</td></tr>
+      <tr><td><code>cap.get(propId)</code></td><td>속성 읽기 (3=폭, 4=높이)</td></tr>
+      <tr><td><code>cap.set(propId, value)</code></td><td>속성 설정</td></tr>
+      <tr><td><code>cap.release()</code></td><td>캡처 해제</td></tr>
+      <tr><td><code>cv2.VideoWriter()</code></td><td>동영상 저장 객체</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 카메라 캡처 → 그레이스케일 표시</div>
+    <pre><code><span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> cv2
+
+cap = cv2.<span class="fn">VideoCapture</span>(<span class="num">0</span>)  <span class="cm"># 0=웹캠, 1=두 번째 카메라</span>
+
+<span class="kw">while</span>(<span class="kw">True</span>):
+    ret, frame = cap.<span class="fn">read</span>()   <span class="cm"># ret=성공여부, frame=이미지</span>
+
+    gray = cv2.<span class="fn">cvtColor</span>(frame, cv2.COLOR_BGR2GRAY)  <span class="cm"># BGR→그레이</span>
+
+    cv2.<span class="fn">imshow</span>(<span class="str">'frame'</span>, gray)
+    <span class="kw">if</span> cv2.<span class="fn">waitKey</span>(<span class="num">1</span>) & <span class="num">0xFF</span> == <span class="fn">ord</span>(<span class="str">'q'</span>):  <span class="cm"># q 누르면 종료</span>
+        <span class="kw">break</span>
+
+cap.<span class="fn">release</span>()
+cv2.<span class="fn">destroyAllWindows</span>()</code></pre>
+    <div class="result-box">
+      <div class="result-text">→ 웹캠 실시간 영상을 그레이스케일로 'frame' 창에 표시</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 동영상 저장 (카메라 → 상하 반전 → 저장)</div>
+    <pre><code><span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> cv2
+
+cap = cv2.<span class="fn">VideoCapture</span>(<span class="num">0</span>)
+
+<span class="cm"># FourCC 코드 지정 (코덱)</span>
+fourcc = cv2.<span class="fn">VideoWriter_fourcc</span>(*<span class="str">'XVID'</span>)
+out = cv2.<span class="fn">VideoWriter</span>(<span class="str">'output.avi'</span>, fourcc, <span class="num">20.0</span>, (<span class="num">640</span>, <span class="num">480</span>))
+<span class="cm">#                     파일명,       코덱,  fps,  (폭, 높이)</span>
+
+<span class="kw">while</span>(cap.<span class="fn">isOpened</span>()):
+    ret, frame = cap.<span class="fn">read</span>()
+    <span class="kw">if</span> ret == <span class="kw">True</span>:
+        frame = cv2.<span class="fn">flip</span>(frame, <span class="num">0</span>)   <span class="cm"># 상하 반전 (0=수직, 1=수평)</span>
+        out.<span class="fn">write</span>(frame)             <span class="cm"># 프레임 저장</span>
+        cv2.<span class="fn">imshow</span>(<span class="str">'frame'</span>, frame)
+        <span class="kw">if</span> cv2.<span class="fn">waitKey</span>(<span class="num">1</span>) & <span class="num">0xFF</span> == <span class="fn">ord</span>(<span class="str">'q'</span>):
+            <span class="kw">break</span>
+
+cap.<span class="fn">release</span>()
+out.<span class="fn">release</span>()   <span class="cm"># VideoWriter도 반드시 해제!</span>
+cv2.<span class="fn">destroyAllWindows</span>()</code></pre>
+    <div class="result-box">
+      <div class="result-text">→ 웹캠 영상을 상하반전하여 output.avi로 저장하면서 동시에 화면 표시</div>
+    </div>
+  </div>
+
+  <div class="card tip">
+    <div class="card-title green">💡 FourCC 코덱</div>
+    <ul>
+      <li>Fedora: DIVX, XVID, MJPG, X264</li>
+      <li>Windows: DIVX</li>
+      <li>표기법: <span class="inline-code">cv2.VideoWriter_fourcc('M','J','P','G')</span> 또는 <span class="inline-code">cv2.VideoWriter_fourcc(*'MJPG')</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===================== 1.2.3 ===================== -->
+<div id="s123" class="section">
+  <div class="chapter-header">
+    <span class="chapter-num">1.2.3</span>
+    <span class="chapter-title">Drawing Functions in OpenCV — 도형 그리기</span>
+  </div>
+
+  <div class="card highlight">
+    <div class="card-title">📌 공통 인자</div>
+    <ul>
+      <li><strong>img</strong>: 그릴 이미지</li>
+      <li><strong>color</strong>: BGR 튜플 (255,0,0)=파랑 / (0,255,0)=초록 / (0,0,255)=빨강</li>
+      <li><strong>thickness</strong>: 선 두께. <strong>-1</strong>이면 내부 채움</li>
+      <li><strong>lineType</strong>: cv2.LINE_AA = 안티앨리어싱 (곡선에 좋음)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 전체 그리기 함수 예제</div>
+    <pre><code><span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> cv2
+
+<span class="cm"># 512x512 검정 이미지 생성</span>
+img = np.<span class="fn">zeros</span>((<span class="num">512</span>, <span class="num">512</span>, <span class="num">3</span>), np.uint8)
+
+<span class="cm"># 선: (시작점) → (끝점), 색, 두께</span>
+img = cv2.<span class="fn">line</span>(img, (<span class="num">0</span>,<span class="num">0</span>), (<span class="num">511</span>,<span class="num">511</span>), (<span class="num">255</span>,<span class="num">0</span>,<span class="num">0</span>), <span class="num">5</span>)
+
+<span class="cm"># 사각형: (좌상단) → (우하단), 색, 두께</span>
+img = cv2.<span class="fn">rectangle</span>(img, (<span class="num">384</span>,<span class="num">0</span>), (<span class="num">510</span>,<span class="num">128</span>), (<span class="num">0</span>,<span class="num">255</span>,<span class="num">0</span>), <span class="num">3</span>)
+
+<span class="cm"># 원: 중심, 반지름, 색, -1=채움</span>
+img = cv2.<span class="fn">circle</span>(img, (<span class="num">447</span>,<span class="num">63</span>), <span class="num">63</span>, (<span class="num">0</span>,<span class="num">0</span>,<span class="num">255</span>), -<span class="num">1</span>)
+
+<span class="cm"># 타원: 중심, (장축,단축), 회전각, 시작각, 끝각, 색, 두께</span>
+img = cv2.<span class="fn">ellipse</span>(img, (<span class="num">256</span>,<span class="num">256</span>), (<span class="num">100</span>,<span class="num">50</span>), <span class="num">0</span>, <span class="num">0</span>, <span class="num">180</span>, <span class="num">255</span>, -<span class="num">1</span>)
+
+<span class="cm"># 다각형: 꼭짓점 배열 형태 조정 필요</span>
+pts = np.<span class="fn">array</span>([[<span class="num">10</span>,<span class="num">5</span>], [<span class="num">20</span>,<span class="num">30</span>], [<span class="num">70</span>,<span class="num">20</span>], [<span class="num">50</span>,<span class="num">10</span>]], np.int32)
+pts = pts.<span class="fn">reshape</span>((-<span class="num">1</span>, <span class="num">1</span>, <span class="num">2</span>))  <span class="cm"># ROWSx1x2 형태</span>
+img = cv2.<span class="fn">polylines</span>(img, [pts], <span class="kw">True</span>, (<span class="num">0</span>,<span class="num">255</span>,<span class="num">255</span>))
+<span class="cm">#                         True=닫힌 도형, False=열린 선</span>
+
+<span class="cm"># 텍스트: 텍스트, 위치(좌하단), 폰트, 크기, 색, 두께, 선타입</span>
+font = cv2.FONT_HERSHEY_SIMPLEX
+cv2.<span class="fn">putText</span>(img, <span class="str">'OpenCV'</span>, (<span class="num">10</span>,<span class="num">500</span>), font, <span class="num">4</span>, (<span class="num">255</span>,<span class="num">255</span>,<span class="num">255</span>), <span class="num">2</span>, cv2.LINE_AA)</code></pre>
+    <div class="result-box">
+      <div class="result-text">→ 검정 배경에 파란 대각선, 초록 사각형, 빨간 채워진 원, 반타원, 노란 다각형, 흰 'OpenCV' 텍스트가 그려진 이미지</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">📐 각 도형 함수 요약</div>
+      <table>
+        <tr><th>함수</th><th>핵심 인자</th></tr>
+        <tr><td>cv2.line</td><td>pt1, pt2</td></tr>
+        <tr><td>cv2.rectangle</td><td>pt1(좌상단), pt2(우하단)</td></tr>
+        <tr><td>cv2.circle</td><td>center, radius</td></tr>
+        <tr><td>cv2.ellipse</td><td>center, axes, angle, startAngle, endAngle</td></tr>
+        <tr><td>cv2.polylines</td><td>pts(ROWSx1x2), isClosed</td></tr>
+        <tr><td>cv2.putText</td><td>text, org(좌하단), fontFace, fontScale</td></tr>
+      </table>
+    </div>
+    <div class="card tip">
+      <div class="card-title green">💡 다각형 주의</div>
+      <p>꼭짓점 배열을 반드시 <strong>reshape((-1,1,2))</strong> 로 변환 후 사용</p>
+      <p><span class="inline-code">polylines</span>의 3번째 인자가 <strong>True</strong>면 닫힌 도형, <strong>False</strong>면 열린 선분들</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 1.2.4 ===================== -->
+<div id="s124" class="section">
+  <div class="chapter-header">
+    <span class="chapter-num">1.2.4</span>
+    <span class="chapter-title">Mouse as a Paint-Brush — 마우스 이벤트</span>
+  </div>
+
+  <div class="card highlight">
+    <div class="card-title">📌 핵심 함수</div>
+    <p><span class="inline-code">cv2.setMouseCallback(winname, callback)</span> — 마우스 콜백 등록</p>
+    <p>콜백 함수 형식: <span class="inline-code">def func(event, x, y, flags, param)</span></p>
+    <table>
+      <tr><th>이벤트 상수</th><th>의미</th></tr>
+      <tr><td>cv2.EVENT_LBUTTONDOWN</td><td>왼쪽 버튼 누름</td></tr>
+      <tr><td>cv2.EVENT_LBUTTONUP</td><td>왼쪽 버튼 뗌</td></tr>
+      <tr><td>cv2.EVENT_LBUTTONDBLCLK</td><td>왼쪽 더블클릭</td></tr>
+      <tr><td>cv2.EVENT_MOUSEMOVE</td><td>마우스 이동</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 더블클릭 위치에 원 그리기</div>
+    <pre><code><span class="kw">import</span> cv2
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># 마우스 콜백 함수</span>
+<span class="kw">def</span> <span class="fn">draw_circle</span>(event, x, y, flags, param):
+    <span class="kw">if</span> event == cv2.EVENT_LBUTTONDBLCLK:  <span class="cm"># 더블클릭</span>
+        cv2.<span class="fn">circle</span>(img, (x, y), <span class="num">100</span>, (<span class="num">255</span>,<span class="num">0</span>,<span class="num">0</span>), -<span class="num">1</span>)
+
+<span class="cm"># 검정 이미지, 창 생성, 콜백 등록</span>
+img = np.<span class="fn">zeros</span>((<span class="num">512</span>, <span class="num">512</span>, <span class="num">3</span>), np.uint8)
+cv2.<span class="fn">namedWindow</span>(<span class="str">'image'</span>)
+cv2.<span class="fn">setMouseCallback</span>(<span class="str">'image'</span>, draw_circle)
+
+<span class="kw">while</span>(<span class="num">1</span>):
+    cv2.<span class="fn">imshow</span>(<span class="str">'image'</span>, img)
+    <span class="kw">if</span> cv2.<span class="fn">waitKey</span>(<span class="num">20</span>) & <span class="num">0xFF</span> == <span class="num">27</span>:  <span class="cm"># ESC 종료</span>
+        <span class="kw">break</span>
+cv2.<span class="fn">destroyAllWindows</span>()</code></pre>
+    <div class="result-box">
+      <div class="result-text">→ 검정 창에서 더블클릭한 위치마다 파란 채워진 원(반지름 100) 그려짐</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 드래그로 사각형/원 그리기 (Paint 앱)</div>
+    <pre><code><span class="kw">import</span> cv2
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+drawing = <span class="kw">False</span>   <span class="cm"># 마우스 눌린 상태</span>
+mode = <span class="kw">True</span>       <span class="cm"># True=사각형, False=원</span>
+ix, iy = -<span class="num">1</span>, -<span class="num">1</span>
+
+<span class="kw">def</span> <span class="fn">draw_circle</span>(event, x, y, flags, param):
+    <span class="kw">global</span> ix, iy, drawing, mode
+
+    <span class="kw">if</span> event == cv2.EVENT_LBUTTONDOWN:
+        drawing = <span class="kw">True</span>
+        ix, iy = x, y
+
+    <span class="kw">elif</span> event == cv2.EVENT_MOUSEMOVE:
+        <span class="kw">if</span> drawing:
+            <span class="kw">if</span> mode:
+                cv2.<span class="fn">rectangle</span>(img, (ix,iy), (x,y), (<span class="num">0</span>,<span class="num">255</span>,<span class="num">0</span>), -<span class="num">1</span>)
+            <span class="kw">else</span>:
+                cv2.<span class="fn">circle</span>(img, (x,y), <span class="num">5</span>, (<span class="num">0</span>,<span class="num">0</span>,<span class="num">255</span>), -<span class="num">1</span>)
+
+    <span class="kw">elif</span> event == cv2.EVENT_LBUTTONUP:
+        drawing = <span class="kw">False</span>
+        <span class="kw">if</span> mode:
+            cv2.<span class="fn">rectangle</span>(img, (ix,iy), (x,y), (<span class="num">0</span>,<span class="num">255</span>,<span class="num">0</span>), -<span class="num">1</span>)
+        <span class="kw">else</span>:
+            cv2.<span class="fn">circle</span>(img, (x,y), <span class="num">5</span>, (<span class="num">0</span>,<span class="num">0</span>,<span class="num">255</span>), -<span class="num">1</span>)
+
+img = np.<span class="fn">zeros</span>((<span class="num">512</span>,<span class="num">512</span>,<span class="num">3</span>), np.uint8)
+cv2.<span class="fn">namedWindow</span>(<span class="str">'image'</span>)
+cv2.<span class="fn">setMouseCallback</span>(<span class="str">'image'</span>, draw_circle)
+
+<span class="kw">while</span>(<span class="num">1</span>):
+    cv2.<span class="fn">imshow</span>(<span class="str">'image'</span>, img)
+    k = cv2.<span class="fn">waitKey</span>(<span class="num">1</span>) & <span class="num">0xFF</span>
+    <span class="kw">if</span> k == <span class="fn">ord</span>(<span class="str">'m'</span>):   <span class="cm"># m 키 → 사각형/원 전환</span>
+        mode = <span class="kw">not</span> mode
+    <span class="kw">elif</span> k == <span class="num">27</span>:
+        <span class="kw">break</span>
+cv2.<span class="fn">destroyAllWindows</span>()</code></pre>
+    <div class="result-box">
+      <div class="result-text">→ 드래그하면 초록 사각형, 'm'으로 전환 후 드래그하면 빨간 작은 원들 그려짐</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 1.2.5 ===================== -->
+<div id="s125" class="section">
+  <div class="chapter-header">
+    <span class="chapter-num">1.2.5</span>
+    <span class="chapter-title">Trackbar as the Color Palette — 트랙바</span>
+  </div>
+
+  <div class="card highlight">
+    <div class="card-title">📌 핵심 함수</div>
+    <table>
+      <tr><th>함수</th><th>인자</th><th>역할</th></tr>
+      <tr><td><code>cv2.createTrackbar</code></td><td>trackbarName, winName, value, count, onChange</td><td>트랙바 생성</td></tr>
+      <tr><td><code>cv2.getTrackbarPos</code></td><td>trackbarName, winName</td><td>현재 위치 읽기</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 RGB 컬러 팔레트 (트랙바로 색 조절)</div>
+    <pre><code><span class="kw">import</span> cv2
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="kw">def</span> <span class="fn">nothing</span>(x):   <span class="cm"># 콜백 (아무것도 안 해도 됨)</span>
+    <span class="kw">pass</span>
+
+img = np.<span class="fn">zeros</span>((<span class="num">300</span>,<span class="num">512</span>,<span class="num">3</span>), np.uint8)
+cv2.<span class="fn">namedWindow</span>(<span class="str">'image'</span>)
+
+<span class="cm"># R, G, B 트랙바 생성 (최솟값=0, 최댓값=255)</span>
+cv2.<span class="fn">createTrackbar</span>(<span class="str">'R'</span>, <span class="str">'image'</span>, <span class="num">0</span>, <span class="num">255</span>, nothing)
+cv2.<span class="fn">createTrackbar</span>(<span class="str">'G'</span>, <span class="str">'image'</span>, <span class="num">0</span>, <span class="num">255</span>, nothing)
+cv2.<span class="fn">createTrackbar</span>(<span class="str">'B'</span>, <span class="str">'image'</span>, <span class="num">0</span>, <span class="num">255</span>, nothing)
+
+<span class="cm"># ON/OFF 스위치 (0 or 1)</span>
+switch = <span class="str">'0 : OFF \n1 : ON'</span>
+cv2.<span class="fn">createTrackbar</span>(switch, <span class="str">'image'</span>, <span class="num">0</span>, <span class="num">1</span>, nothing)
+
+<span class="kw">while</span>(<span class="num">1</span>):
+    cv2.<span class="fn">imshow</span>(<span class="str">'image'</span>, img)
+    k = cv2.<span class="fn">waitKey</span>(<span class="num">1</span>) & <span class="num">0xFF</span>
+    <span class="kw">if</span> k == <span class="num">27</span>:
+        <span class="kw">break</span>
+
+    r = cv2.<span class="fn">getTrackbarPos</span>(<span class="str">'R'</span>, <span class="str">'image'</span>)
+    g = cv2.<span class="fn">getTrackbarPos</span>(<span class="str">'G'</span>, <span class="str">'image'</span>)
+    b = cv2.<span class="fn">getTrackbarPos</span>(<span class="str">'B'</span>, <span class="str">'image'</span>)
+    s = cv2.<span class="fn">getTrackbarPos</span>(switch, <span class="str">'image'</span>)
+
+    <span class="kw">if</span> s == <span class="num">0</span>:
+        img[:] = <span class="num">0</span>           <span class="cm"># OFF → 검정</span>
+    <span class="kw">else</span>:
+        img[:] = [b, g, r]   <span class="cm"># ON → BGR 색 채움 (OpenCV는 BGR!)</span>
+
+cv2.<span class="fn">destroyAllWindows</span>()</code></pre>
+    <div class="result-box">
+      <div class="result-text">→ R, G, B 트랙바와 ON/OFF 스위치가 있는 창<br>→ 스위치 OFF 시 검정, ON 시 트랙바 값에 따른 색으로 창 채워짐</div>
+    </div>
+  </div>
+
+  <div class="card tip">
+    <div class="card-title green">💡 트랙바 = 버튼 대용</div>
+    <p>OpenCV에는 기본 버튼이 없으므로, 트랙바를 0~1로 설정하여 버튼/스위치 대용으로 사용</p>
+  </div>
+</div>
+
+<!-- ===================== 1.3.1 ===================== -->
+<div id="s131" class="section">
+  <div class="chapter-header">
+    <span class="chapter-num">1.3.1</span>
+    <span class="chapter-title">Basic Operations on Images — 이미지 기본 연산</span>
+  </div>
+
+  <div class="two-col">
+    <div class="card highlight">
+      <div class="card-title">💻 픽셀 접근 및 수정</div>
+      <pre><code><span class="kw">import</span> cv2
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+img = cv2.<span class="fn">imread</span>(<span class="str">'messi5.jpg'</span>)
+
+<span class="cm"># 픽셀값 읽기 (BGR 배열 반환)</span>
+px = img[<span class="num">100</span>, <span class="num">100</span>]
+<span class="output">>>> [157 166 200]</span>
+
+<span class="cm"># 특정 채널만</span>
+blue = img[<span class="num">100</span>, <span class="num">100</span>, <span class="num">0</span>]
+<span class="output">>>> 157</span>
+
+<span class="cm"># 픽셀 수정</span>
+img[<span class="num">100</span>, <span class="num">100</span>] = [<span class="num">255</span>, <span class="num">255</span>, <span class="num">255</span>]
+
+<span class="cm"># 더 빠른 방법: item/itemset</span>
+img.<span class="fn">item</span>(<span class="num">10</span>, <span class="num">10</span>, <span class="num">2</span>)      <span class="cm"># R값 읽기</span>
+img.<span class="fn">itemset</span>((<span class="num">10</span>,<span class="num">10</span>,<span class="num">2</span>), <span class="num">100</span>)  <span class="cm"># R값 수정</span></code></pre>
+    </div>
+
+    <div class="card highlight">
+      <div class="card-title">💻 이미지 속성</div>
+      <pre><code><span class="cm"># 형태: (행수, 열수, 채널수)</span>
+img.<span class="var">shape</span>
+<span class="output">>>> (342, 548, 3)</span>
+
+<span class="cm"># 그레이스케일은 2D (채널없음)</span>
+<span class="cm"># (행수, 열수) 만 반환됨</span>
+
+<span class="cm"># 전체 픽셀수</span>
+img.<span class="var">size</span>
+<span class="output">>>> 562248</span>
+
+<span class="cm"># 데이터 타입</span>
+img.<span class="var">dtype</span>
+<span class="output">>>> uint8</span></code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 ROI (Region of Interest) — 관심 영역</div>
+    <pre><code><span class="cm"># 공 영역 잘라내어 다른 위치에 복사</span>
+ball = img[<span class="num">280</span>:<span class="num">340</span>, <span class="num">330</span>:<span class="num">390</span>]  <span class="cm"># [행범위, 열범위]</span>
+img[<span class="num">273</span>:<span class="num">333</span>, <span class="num">100</span>:<span class="num">160</span>] = ball</code></pre>
+    <div class="result-box">
+      <div class="result-text">→ 이미지의 특정 영역(공)을 잘라내어 다른 위치에 붙여넣기</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 채널 분리 & 병합</div>
+    <pre><code><span class="cm"># 채널 분리</span>
+b, g, r = cv2.<span class="fn">split</span>(img)    <span class="cm"># 느림! 필요할 때만</span>
+
+<span class="cm"># 채널 병합</span>
+img = cv2.<span class="fn">merge</span>((b, g, r))
+
+<span class="cm"># Numpy로 빠르게 접근 (추천)</span>
+b = img[:, :, <span class="num">0</span>]
+
+<span class="cm"># 빨간 채널 0으로 만들기</span>
+img[:, :, <span class="num">2</span>] = <span class="num">0</span>  <span class="cm"># 2=R채널 (BGR에서)</span></code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 이미지 패딩 (테두리 추가) — copyMakeBorder</div>
+    <pre><code><span class="kw">import</span> cv2
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> matplotlib <span class="kw">import</span> pyplot <span class="kw">as</span> plt
+
+BLUE = [<span class="num">255</span>, <span class="num">0</span>, <span class="num">0</span>]
+img1 = cv2.<span class="fn">imread</span>(<span class="str">'opencv_logo.png'</span>)
+
+replicate = cv2.<span class="fn">copyMakeBorder</span>(img1, <span class="num">10</span>,<span class="num">10</span>,<span class="num">10</span>,<span class="num">10</span>, cv2.BORDER_REPLICATE)
+reflect   = cv2.<span class="fn">copyMakeBorder</span>(img1, <span class="num">10</span>,<span class="num">10</span>,<span class="num">10</span>,<span class="num">10</span>, cv2.BORDER_REFLECT)
+constant  = cv2.<span class="fn">copyMakeBorder</span>(img1, <span class="num">10</span>,<span class="num">10</span>,<span class="num">10</span>,<span class="num">10</span>, cv2.BORDER_CONSTANT, value=BLUE)</code></pre>
+    <table>
+      <tr><th>BORDER 타입</th><th>설명</th><th>패턴 예</th></tr>
+      <tr><td>BORDER_CONSTANT</td><td>단색 테두리</td><td>value 지정 필요</td></tr>
+      <tr><td>BORDER_REPLICATE</td><td>가장자리 픽셀 반복</td><td>aaaaaa|abcdefgh|hhhhhhh</td></tr>
+      <tr><td>BORDER_REFLECT</td><td>경계 포함 거울반사</td><td>fedcba|abcdefgh|hgfedcb</td></tr>
+      <tr><td>BORDER_REFLECT_101</td><td>경계 제외 거울반사</td><td>gfedcb|abcdefgh|gfedcba</td></tr>
+      <tr><td>BORDER_WRAP</td><td>감싸기</td><td>cdefgh|abcdefgh|abcdefg</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ===================== 1.3.2 ===================== -->
+<div id="s132" class="section">
+  <div class="chapter-header">
+    <span class="chapter-num">1.3.2</span>
+    <span class="chapter-title">Arithmetic Operations on Images — 산술 연산</span>
+  </div>
+
+  <div class="card highlight">
+    <div class="card-title">📌 OpenCV 덧셈 vs Numpy 덧셈</div>
+    <pre><code>x = np.uint8([<span class="num">250</span>])
+y = np.uint8([<span class="num">10</span>])
+
+<span class="fn">print</span>(cv2.<span class="fn">add</span>(x, y))   <span class="cm"># 250+10=260 → 포화(saturate) = 255</span>
+<span class="output">>>> [[255]]</span>
+
+<span class="fn">print</span>(x + y)           <span class="cm"># 250+10=260 → 모듈로 260%256 = 4</span>
+<span class="output">>>> [4]</span></code></pre>
+    <div class="warn-box">항상 cv2.add() 사용 권장 — 포화 연산이 이미지 처리에 더 자연스러움</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 이미지 블렌딩 — addWeighted</div>
+    <pre><code>img1 = cv2.<span class="fn">imread</span>(<span class="str">'ml.png'</span>)
+img2 = cv2.<span class="fn">imread</span>(<span class="str">'opencv_logo.jpg'</span>)
+
+<span class="cm"># dst = α·img1 + β·img2 + γ</span>
+dst = cv2.<span class="fn">addWeighted</span>(img1, <span class="num">0.7</span>, img2, <span class="num">0.3</span>, <span class="num">0</span>)
+<span class="cm">#                   img1, α,    img2, β,   γ</span>
+
+cv2.<span class="fn">imshow</span>(<span class="str">'dst'</span>, dst)
+cv2.<span class="fn">waitKey</span>(<span class="num">0</span>)
+cv2.<span class="fn">destroyAllWindows</span>()</code></pre>
+    <div class="result-box">
+      <div class="result-text">→ img1에 70%, img2에 30% 비율로 블렌딩된 반투명 합성 이미지</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 비트 연산으로 로고 합성</div>
+    <pre><code><span class="cm"># 메시 사진 위에 OpenCV 로고를 불투명하게 합성</span>
+img1 = cv2.<span class="fn">imread</span>(<span class="str">'messi5.jpg'</span>)
+img2 = cv2.<span class="fn">imread</span>(<span class="str">'opencv_logo.png'</span>)
+
+rows, cols, channels = img2.<span class="var">shape</span>
+roi = img1[<span class="num">0</span>:rows, <span class="num">0</span>:cols]   <span class="cm"># 좌상단 ROI</span>
+
+<span class="cm"># 로고의 마스크 생성 (그레이→이진)</span>
+img2gray = cv2.<span class="fn">cvtColor</span>(img2, cv2.COLOR_BGR2GRAY)
+ret, mask = cv2.<span class="fn">threshold</span>(img2gray, <span class="num">10</span>, <span class="num">255</span>, cv2.THRESH_BINARY)
+mask_inv = cv2.<span class="fn">bitwise_not</span>(mask)  <span class="cm"># 반전 마스크</span>
+
+<span class="cm"># ROI에서 로고 영역을 검정으로</span>
+img1_bg = cv2.<span class="fn">bitwise_and</span>(roi, roi, mask=mask_inv)
+
+<span class="cm"># 로고에서 로고 영역만 추출</span>
+img2_fg = cv2.<span class="fn">bitwise_and</span>(img2, img2, mask=mask)
+
+<span class="cm"># 합치기</span>
+dst = cv2.<span class="fn">add</span>(img1_bg, img2_fg)
+img1[<span class="num">0</span>:rows, <span class="num">0</span>:cols] = dst
+
+cv2.<span class="fn">imshow</span>(<span class="str">'res'</span>, img1)</code></pre>
+    <div class="result-box">
+      <div class="result-text">→ 메시 사진 좌상단에 OpenCV 로고가 불투명하게 합성된 이미지</div>
+    </div>
+  </div>
+
+  <div class="card tip">
+    <div class="card-title green">💡 비트 연산 정리</div>
+    <table>
+      <tr><th>함수</th><th>설명</th></tr>
+      <tr><td>cv2.bitwise_and(a, b, mask)</td><td>AND 연산 — mask 영역만 AND</td></tr>
+      <tr><td>cv2.bitwise_or(a, b)</td><td>OR 연산</td></tr>
+      <tr><td>cv2.bitwise_xor(a, b)</td><td>XOR 연산</td></tr>
+      <tr><td>cv2.bitwise_not(a)</td><td>NOT 연산 (반전)</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ===================== 1.4.1 ===================== -->
+<div id="s141" class="section">
+  <div class="chapter-header">
+    <span class="chapter-num">1.4.1</span>
+    <span class="chapter-title">Changing Colorspaces — 색공간 변환</span>
+  </div>
+
+  <div class="card highlight">
+    <div class="card-title">📌 cvtColor 함수</div>
+    <p><span class="inline-code">cv2.cvtColor(img, flag)</span></p>
+    <table>
+      <tr><th>변환</th><th>플래그</th></tr>
+      <tr><td>BGR → 그레이스케일</td><td>cv2.COLOR_BGR2GRAY</td></tr>
+      <tr><td>BGR → HSV</td><td>cv2.COLOR_BGR2HSV</td></tr>
+      <tr><td>HSV → BGR</td><td>cv2.COLOR_HSV2BGR</td></tr>
+    </table>
+    <div class="em-box">
+      <strong>HSV 범위:</strong> Hue [0,179], Saturation [0,255], Value [0,255]
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 파란 물체 추적 (객체 트래킹)</div>
+    <pre><code><span class="kw">import</span> cv2
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+cap = cv2.<span class="fn">VideoCapture</span>(<span class="num">0</span>)
+
+<span class="kw">while</span>(<span class="num">1</span>):
+    _, frame = cap.<span class="fn">read</span>()
+
+    <span class="cm"># BGR → HSV 변환</span>
+    hsv = cv2.<span class="fn">cvtColor</span>(frame, cv2.COLOR_BGR2HSV)
+
+    <span class="cm"># 파란색 범위 지정</span>
+    lower_blue = np.<span class="fn">array</span>([<span class="num">110</span>, <span class="num">50</span>, <span class="num">50</span>])
+    upper_blue = np.<span class="fn">array</span>([<span class="num">130</span>, <span class="num">255</span>, <span class="num">255</span>])
+
+    <span class="cm"># 범위 내 픽셀만 마스킹</span>
+    mask = cv2.<span class="fn">inRange</span>(hsv, lower_blue, upper_blue)
+
+    <span class="cm"># 마스크 적용</span>
+    res = cv2.<span class="fn">bitwise_and</span>(frame, frame, mask=mask)
+
+    cv2.<span class="fn">imshow</span>(<span class="str">'frame'</span>, frame)
+    cv2.<span class="fn">imshow</span>(<span class="str">'mask'</span>, mask)
+    cv2.<span class="fn">imshow</span>(<span class="str">'res'</span>, res)
+    k = cv2.<span class="fn">waitKey</span>(<span class="num">5</span>) & <span class="num">0xFF</span>
+    <span class="kw">if</span> k == <span class="num">27</span>:
+        <span class="kw">break</span>
+cv2.<span class="fn">destroyAllWindows</span>()</code></pre>
+    <div class="result-box">
+      <div class="result-text">→ 3개 창: 원본(frame), 마스크(파란영역=흰색), 결과(파란 물체만 보임)</div>
+    </div>
+  </div>
+
+  <div class="card tip">
+    <div class="card-title green">💡 특정 색의 HSV 범위 찾기</div>
+    <pre><code><span class="cm"># 예: 초록색의 HSV 값 찾기</span>
+green = np.uint8([[[<span class="num">0</span>, <span class="num">255</span>, <span class="num">0</span>]]])           <span class="cm"># BGR</span>
+hsv_green = cv2.<span class="fn">cvtColor</span>(green, cv2.COLOR_BGR2HSV)
+<span class="fn">print</span>(hsv_green)
+<span class="output">>>> [[[ 60 255 255]]]</span>
+<span class="cm"># lower = [H-10, 100, 100], upper = [H+10, 255, 255]</span></code></pre>
+    </div>
+</div>
+
+<!-- ===================== 1.4.2 ===================== -->
+<div id="s142" class="section">
+  <div class="chapter-header">
+    <span class="chapter-num">1.4.2</span>
+    <span class="chapter-title">Geometric Transformations — 기하 변환</span>
+  </div>
+
+  <div class="card highlight">
+    <div class="card-title">📌 변환 함수 요약</div>
+    <table>
+      <tr><th>함수</th><th>역할</th><th>변환 행렬</th></tr>
+      <tr><td>cv2.resize()</td><td>크기 변환(스케일링)</td><td>—</td></tr>
+      <tr><td>cv2.warpAffine()</td><td>아핀 변환(이동·회전·전단)</td><td>2×3 행렬</td></tr>
+      <tr><td>cv2.warpPerspective()</td><td>원근 변환</td><td>3×3 행렬</td></tr>
+      <tr><td>cv2.getRotationMatrix2D()</td><td>회전 행렬 생성</td><td>→ 2×3 반환</td></tr>
+      <tr><td>cv2.getAffineTransform()</td><td>아핀 행렬 생성 (3점)</td><td>→ 2×3 반환</td></tr>
+      <tr><td>cv2.getPerspectiveTransform()</td><td>원근 행렬 생성 (4점)</td><td>→ 3×3 반환</td></tr>
+    </table>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">💻 스케일링 (크기 변환)</div>
+      <pre><code>img = cv2.<span class="fn">imread</span>(<span class="str">'messi5.jpg'</span>)
+
+<span class="cm"># 배율로 2배 확대</span>
+res = cv2.<span class="fn">resize</span>(img, <span class="kw">None</span>,
+    fx=<span class="num">2</span>, fy=<span class="num">2</span>,
+    interpolation=cv2.INTER_CUBIC)
+
+<span class="cm"># 명시적 크기로</span>
+h, w = img.<span class="var">shape</span>[:<span class="num">2</span>]
+res = cv2.<span class="fn">resize</span>(img,
+    (<span class="num">2</span>*w, <span class="num">2</span>*h),
+    interpolation=cv2.INTER_CUBIC)</code></pre>
+      <div class="em-box" style="font-size:0.82rem">
+        축소: INTER_AREA<br>확대: INTER_CUBIC(느림), INTER_LINEAR
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">💻 이동 (Translation)</div>
+      <pre><code>img = cv2.<span class="fn">imread</span>(<span class="str">'messi5.jpg'</span>, <span class="num">0</span>)
+rows, cols = img.<span class="var">shape</span>
+
+<span class="cm"># 이동 행렬 M (x방향 100, y방향 50)</span>
+M = np.<span class="fn">float32</span>([[<span class="num">1</span>,<span class="num">0</span>,<span class="num">100</span>],
+                 [<span class="num">0</span>,<span class="num">1</span>,<span class="num">50</span>]])
+dst = cv2.<span class="fn">warpAffine</span>(img, M,
+    (cols, rows))  <span class="cm"># (폭, 높이) 순서!</span>
+
+cv2.<span class="fn">imshow</span>(<span class="str">'img'</span>, dst)
+cv2.<span class="fn">waitKey</span>(<span class="num">0</span>)</code></pre>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">💻 회전 (Rotation)</div>
+      <pre><code>img = cv2.<span class="fn">imread</span>(<span class="str">'messi5.jpg'</span>, <span class="num">0</span>)
+rows, cols = img.<span class="var">shape</span>
+
+<span class="cm"># 중심 기준 90도 회전, 스케일=1</span>
+M = cv2.<span class="fn">getRotationMatrix2D</span>(
+    (cols/<span class="num">2</span>, rows/<span class="num">2</span>), <span class="num">90</span>, <span class="num">1</span>)
+<span class="cm">#  (중심x,y),          각도, 스케일</span>
+
+dst = cv2.<span class="fn">warpAffine</span>(img, M, (cols, rows))</code></pre>
+    </div>
+
+    <div class="card">
+      <div class="card-title">💻 원근 변환</div>
+      <pre><code>img = cv2.<span class="fn">imread</span>(<span class="str">'sudokusmall.png'</span>)
+rows, cols, ch = img.<span class="var">shape</span>
+
+<span class="cm"># 입력 4점 → 출력 4점</span>
+pts1 = np.<span class="fn">float32</span>([[<span class="num">56</span>,<span class="num">65</span>],[<span class="num">368</span>,<span class="num">52</span>],
+                    [<span class="num">28</span>,<span class="num">387</span>],[<span class="num">389</span>,<span class="num">390</span>]])
+pts2 = np.<span class="fn">float32</span>([[<span class="num">0</span>,<span class="num">0</span>],[<span class="num">300</span>,<span class="num">0</span>],
+                    [<span class="num">0</span>,<span class="num">300</span>],[<span class="num">300</span>,<span class="num">300</span>]])
+
+M = cv2.<span class="fn">getPerspectiveTransform</span>(pts1, pts2)
+dst = cv2.<span class="fn">warpPerspective</span>(img, M, (<span class="num">300</span>,<span class="num">300</span>))</code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 아핀 변환 (3점으로 정의)</div>
+    <pre><code>img = cv2.<span class="fn">imread</span>(<span class="str">'drawing.png'</span>)
+rows, cols, ch = img.<span class="var">shape</span>
+
+pts1 = np.<span class="fn">float32</span>([[<span class="num">50</span>,<span class="num">50</span>], [<span class="num">200</span>,<span class="num">50</span>], [<span class="num">50</span>,<span class="num">200</span>]])
+pts2 = np.<span class="fn">float32</span>([[<span class="num">10</span>,<span class="num">100</span>],[<span class="num">200</span>,<span class="num">50</span>],[<span class="num">100</span>,<span class="num">250</span>]])
+
+M = cv2.<span class="fn">getAffineTransform</span>(pts1, pts2)
+dst = cv2.<span class="fn">warpAffine</span>(img, M, (cols, rows))</code></pre>
+    <div class="result-box">
+      <div class="result-text">→ 3쌍의 대응점으로 아핀 변환 행렬 계산 → 이미지 변형 (평행선 유지)</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 1.4.3 ===================== -->
+<div id="s143" class="section">
+  <div class="chapter-header">
+    <span class="chapter-num">1.4.3</span>
+    <span class="chapter-title">Image Thresholding — 임계 처리</span>
+  </div>
+
+  <div class="card highlight">
+    <div class="card-title">📌 threshold 함수</div>
+    <p><span class="inline-code">ret, dst = cv2.threshold(src, thresh, maxval, type)</span></p>
+    <table>
+      <tr><th>type 플래그</th><th>의미</th></tr>
+      <tr><td>THRESH_BINARY</td><td>픽셀 > thresh → maxval, 그 외 → 0</td></tr>
+      <tr><td>THRESH_BINARY_INV</td><td>위의 반전</td></tr>
+      <tr><td>THRESH_TRUNC</td><td>픽셀 > thresh → thresh (잘라냄)</td></tr>
+      <tr><td>THRESH_TOZERO</td><td>픽셀 ≤ thresh → 0</td></tr>
+      <tr><td>THRESH_TOZERO_INV</td><td>픽셀 > thresh → 0</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 단순 임계처리 (5가지 방법 비교)</div>
+    <pre><code><span class="kw">import</span> cv2
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> matplotlib <span class="kw">import</span> pyplot <span class="kw">as</span> plt
+
+img = cv2.<span class="fn">imread</span>(<span class="str">'gradient.png'</span>, <span class="num">0</span>)  <span class="cm"># 그레이스케일</span>
+
+ret, thresh1 = cv2.<span class="fn">threshold</span>(img, <span class="num">127</span>, <span class="num">255</span>, cv2.THRESH_BINARY)
+ret, thresh2 = cv2.<span class="fn">threshold</span>(img, <span class="num">127</span>, <span class="num">255</span>, cv2.THRESH_BINARY_INV)
+ret, thresh3 = cv2.<span class="fn">threshold</span>(img, <span class="num">127</span>, <span class="num">255</span>, cv2.THRESH_TRUNC)
+ret, thresh4 = cv2.<span class="fn">threshold</span>(img, <span class="num">127</span>, <span class="num">255</span>, cv2.THRESH_TOZERO)
+ret, thresh5 = cv2.<span class="fn">threshold</span>(img, <span class="num">127</span>, <span class="num">255</span>, cv2.THRESH_TOZERO_INV)</code></pre>
+    <div class="result-box">
+      <div class="result-text">→ 5가지 방식으로 이진화된 이미지들 (그라디언트 이미지 → 각각 다른 이진화 패턴)</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 적응형 임계처리 (Adaptive Thresholding)</div>
+    <pre><code>img = cv2.<span class="fn">imread</span>(<span class="str">'dave.jpg'</span>, <span class="num">0</span>)
+img = cv2.<span class="fn">medianBlur</span>(img, <span class="num">5</span>)   <span class="cm"># 노이즈 제거 먼저</span>
+
+<span class="cm"># 전역 임계처리</span>
+ret, th1 = cv2.<span class="fn">threshold</span>(img, <span class="num">127</span>, <span class="num">255</span>, cv2.THRESH_BINARY)
+
+<span class="cm"># 평균 기반 적응형</span>
+th2 = cv2.<span class="fn">adaptiveThreshold</span>(img, <span class="num">255</span>,
+    cv2.ADAPTIVE_THRESH_MEAN_C,
+    cv2.THRESH_BINARY, <span class="num">11</span>, <span class="num">2</span>)
+<span class="cm">#   입력, maxVal, 적응방법, 임계방법, 블록크기, C값</span>
+
+<span class="cm"># 가우시안 기반 적응형</span>
+th3 = cv2.<span class="fn">adaptiveThreshold</span>(img, <span class="num">255</span>,
+    cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+    cv2.THRESH_BINARY, <span class="num">11</span>, <span class="num">2</span>)</code></pre>
+    <div class="result-box">
+      <div class="result-text">→ 조명이 불균일한 이미지에서 전역 임계처리보다 적응형이 더 선명한 결과</div>
+    </div>
+    <div class="em-box">
+      <strong>블록 크기(blockSize)</strong>: 각 픽셀의 임계값 계산에 사용하는 인접 영역 크기 (홀수)<br>
+      <strong>C</strong>: 계산된 평균/가중합에서 빼는 상수
+    </div>
+  </div>
+
+  <div class="card important">
+    <div class="card-title pink">💻 Otsu's Binarization (자동 임계값)</div>
+    <pre><code>img = cv2.<span class="fn">imread</span>(<span class="str">'noisy2.png'</span>, <span class="num">0</span>)
+
+<span class="cm"># 1. 전역 임계처리 (임의값 127)</span>
+ret1, th1 = cv2.<span class="fn">threshold</span>(img, <span class="num">127</span>, <span class="num">255</span>, cv2.THRESH_BINARY)
+
+<span class="cm"># 2. Otsu 자동 임계값 (thresh=0 입력, THRESH_OTSU 추가)</span>
+ret2, th2 = cv2.<span class="fn">threshold</span>(img, <span class="num">0</span>, <span class="num">255</span>,
+    cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+<span class="cm"># 3. 가우시안 블러 후 Otsu (노이즈 있을 때 최적)</span>
+blur = cv2.<span class="fn">GaussianBlur</span>(img, (<span class="num">5</span>,<span class="num">5</span>), <span class="num">0</span>)
+ret3, th3 = cv2.<span class="fn">threshold</span>(blur, <span class="num">0</span>, <span class="num">255</span>,
+    cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+<span class="fn">print</span>(ret2)  <span class="cm"># 자동으로 찾은 최적 임계값 출력</span></code></pre>
+    <div class="result-box">
+      <div class="result-text">→ 이중모달(bimodal) 히스토그램에서 두 봉우리 사이 최적 임계값 자동 결정<br>→ ret2에 자동 계산된 임계값 반환</div>
+    </div>
+    <div class="warn-box">Otsu는 쌍봉(bimodal) 히스토그램 이미지에 효과적. 단일봉이면 정확도 낮음</div>
+  </div>
+</div>
+
+<!-- ===================== 1.4.4 ===================== -->
+<div id="s144" class="section">
+  <div class="chapter-header">
+    <span class="chapter-num">1.4.4</span>
+    <span class="chapter-title">Smoothing Images — 이미지 스무딩</span>
+  </div>
+
+  <div class="card highlight">
+    <div class="card-title">📌 4가지 블러링 방법 비교</div>
+    <table>
+      <tr><th>방법</th><th>함수</th><th>특징</th><th>노이즈 제거</th></tr>
+      <tr><td>평균 필터링</td><td>cv2.blur()</td><td>커널 평균값</td><td>일반 노이즈</td></tr>
+      <tr><td>가우시안</td><td>cv2.GaussianBlur()</td><td>가중 평균</td><td>가우시안 노이즈</td></tr>
+      <tr><td>중앙값</td><td>cv2.medianBlur()</td><td>중앙값으로 대체</td><td>소금&후추 노이즈</td></tr>
+      <tr><td>양방향</td><td>cv2.bilateralFilter()</td><td>엣지 보존</td><td>엣지 보존하며 스무딩</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 4가지 블러링 코드</div>
+    <pre><code><span class="kw">import</span> cv2
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> matplotlib <span class="kw">import</span> pyplot <span class="kw">as</span> plt
+
+img = cv2.<span class="fn">imread</span>(<span class="str">'opencv_logo.png'</span>)
+
+<span class="cm"># 1. 2D 컨볼루션 (직접 커널 만들기)</span>
+kernel = np.<span class="fn">ones</span>((<span class="num">5</span>,<span class="num">5</span>), np.float32) / <span class="num">25</span>
+dst = cv2.<span class="fn">filter2D</span>(img, -<span class="num">1</span>, kernel)  <span class="cm"># -1=입력과 같은 depth</span>
+
+<span class="cm"># 2. 평균 블러 (5x5 커널)</span>
+blur = cv2.<span class="fn">blur</span>(img, (<span class="num">5</span>, <span class="num">5</span>))
+
+<span class="cm"># 3. 가우시안 블러</span>
+blur = cv2.<span class="fn">GaussianBlur</span>(img, (<span class="num">5</span>, <span class="num">5</span>), <span class="num">0</span>)
+<span class="cm">#    커널크기 홀수, sigmaX=0이면 커널크기로 자동계산</span>
+
+<span class="cm"># 4. 중앙값 블러 (소금&후추 노이즈에 최적)</span>
+median = cv2.<span class="fn">medianBlur</span>(img, <span class="num">5</span>)  <span class="cm"># 커널크기=홀수 정수</span>
+
+<span class="cm"># 5. 양방향 필터 (엣지 보존)</span>
+blur = cv2.<span class="fn">bilateralFilter</span>(img, <span class="num">9</span>, <span class="num">75</span>, <span class="num">75</span>)
+<span class="cm">#    d=9(직경), sigmaColor=75, sigmaSpace=75</span></code></pre>
+    <div class="result-box">
+      <div class="result-text">→ 각 필터링 방법에 따라 다른 정도의 블러 효과<br>→ 양방향 필터는 표면 텍스처는 없어지지만 엣지(윤곽)는 선명하게 유지</div>
+    </div>
+  </div>
+
+  <div class="card tip">
+    <div class="card-title green">💡 언제 어느 블러를?</div>
+    <ul>
+      <li><strong>일반 노이즈 제거</strong> → GaussianBlur</li>
+      <li><strong>소금&후추 노이즈</strong> → medianBlur</li>
+      <li><strong>엣지 보존 스무딩</strong> → bilateralFilter (대신 느림)</li>
+      <li><strong>Otsu 전처리</strong> → GaussianBlur(img, (5,5), 0)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===================== 1.4.5 ===================== -->
+<div id="s145" class="section">
+  <div class="chapter-header">
+    <span class="chapter-num">1.4.5</span>
+    <span class="chapter-title">Morphological Transformations — 형태 변환</span>
+  </div>
+
+  <div class="card highlight">
+    <div class="card-title">📌 형태 변환 개념</div>
+    <p>이진 이미지에서 구조 요소(커널)를 이미지 위로 슬라이딩하여 형태를 변환</p>
+    <table>
+      <tr><th>연산</th><th>함수/방법</th><th>효과</th></tr>
+      <tr><td>침식 (Erosion)</td><td>cv2.erode()</td><td>전경 축소, 잡음 제거</td></tr>
+      <tr><td>팽창 (Dilation)</td><td>cv2.dilate()</td><td>전경 확장</td></tr>
+      <tr><td>열기 (Opening)</td><td>MORPH_OPEN</td><td>침식→팽창, 작은 흰 노이즈 제거</td></tr>
+      <tr><td>닫기 (Closing)</td><td>MORPH_CLOSE</td><td>팽창→침식, 작은 검은 구멍 메움</td></tr>
+      <tr><td>그래디언트</td><td>MORPH_GRADIENT</td><td>팽창-침식 = 윤곽선</td></tr>
+      <tr><td>Top Hat</td><td>MORPH_TOPHAT</td><td>원본-열기</td></tr>
+      <tr><td>Black Hat</td><td>MORPH_BLACKHAT</td><td>닫기-원본</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 침식·팽창·열기·닫기</div>
+    <pre><code><span class="kw">import</span> cv2
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+img = cv2.<span class="fn">imread</span>(<span class="str">'j.png'</span>, <span class="num">0</span>)
+kernel = np.<span class="fn">ones</span>((<span class="num">5</span>, <span class="num">5</span>), np.uint8)  <span class="cm"># 구조 요소</span>
+
+<span class="cm"># 침식: 커널 아래 모든 픽셀이 1일 때만 1</span>
+erosion = cv2.<span class="fn">erode</span>(img, kernel, iterations=<span class="num">1</span>)
+
+<span class="cm"># 팽창: 커널 아래 하나라도 1이면 1</span>
+dilation = cv2.<span class="fn">dilate</span>(img, kernel, iterations=<span class="num">1</span>)
+
+<span class="cm"># 열기: 침식 후 팽창 (작은 흰 점 제거)</span>
+opening = cv2.<span class="fn">morphologyEx</span>(img, cv2.MORPH_OPEN, kernel)
+
+<span class="cm"># 닫기: 팽창 후 침식 (작은 검은 구멍 메움)</span>
+closing = cv2.<span class="fn">morphologyEx</span>(img, cv2.MORPH_CLOSE, kernel)
+
+<span class="cm"># 그래디언트: 팽창-침식 = 윤곽선 효과</span>
+gradient = cv2.<span class="fn">morphologyEx</span>(img, cv2.MORPH_GRADIENT, kernel)
+
+<span class="cm"># Top Hat: 원본-열기</span>
+tophat = cv2.<span class="fn">morphologyEx</span>(img, cv2.MORPH_TOPHAT, kernel)
+
+<span class="cm"># Black Hat: 닫기-원본</span>
+blackhat = cv2.<span class="fn">morphologyEx</span>(img, cv2.MORPH_BLACKHAT, kernel)</code></pre>
+    <div class="result-box">
+      <div class="result-text">→ 침식: 글자 얇아짐 / 팽창: 글자 굵어짐 / 열기: 잔여 노이즈 제거 / 닫기: 글자 내부 빈 부분 채움</div>
+    </div>
+  </div>
+
+  <div class="card tip">
+    <div class="card-title green">💻 구조 요소 (Structuring Element) 만들기</div>
+    <pre><code><span class="cm"># 사각형 커널</span>
+cv2.<span class="fn">getStructuringElement</span>(cv2.MORPH_RECT, (<span class="num">5</span>,<span class="num">5</span>))
+<span class="output">>>> [[1,1,1,1,1], [1,1,1,1,1], ...]</span>
+
+<span class="cm"># 타원형 커널</span>
+cv2.<span class="fn">getStructuringElement</span>(cv2.MORPH_ELLIPSE, (<span class="num">5</span>,<span class="num">5</span>))
+<span class="output">>>> [[0,0,1,0,0], [1,1,1,1,1], ...]</span>
+
+<span class="cm"># 십자형 커널</span>
+cv2.<span class="fn">getStructuringElement</span>(cv2.MORPH_CROSS, (<span class="num">5</span>,<span class="num">5</span>))
+<span class="output">>>> [[0,0,1,0,0], [0,0,1,0,0], [1,1,1,1,1], ...]</span></code></pre>
+    </div>
+</div>
+
+<!-- ===================== 1.4.7 ===================== -->
+<div id="s147" class="section">
+  <div class="chapter-header">
+    <span class="chapter-num">1.4.7</span>
+    <span class="chapter-title">Histograms in OpenCV — 히스토그램</span>
+  </div>
+
+  <div class="card highlight">
+    <div class="card-title">📌 히스토그램 개념</div>
+    <ul>
+      <li><strong>BINS</strong>: 구간 수 (256=각 픽셀값, 16=16구간으로 나눔)</li>
+      <li><strong>DIMS</strong>: 수집하는 특성 수 (보통 1=강도값)</li>
+      <li><strong>RANGE</strong>: 측정 범위 (보통 [0,256])</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 히스토그램 계산 및 플롯</div>
+    <pre><code><span class="kw">import</span> cv2
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> matplotlib <span class="kw">import</span> pyplot <span class="kw">as</span> plt
+
+img = cv2.<span class="fn">imread</span>(<span class="str">'home.jpg'</span>, <span class="num">0</span>)
+
+<span class="cm"># OpenCV 히스토그램 계산</span>
+hist = cv2.<span class="fn">calcHist</span>([img], [<span class="num">0</span>], <span class="kw">None</span>, [<span class="num">256</span>], [<span class="num">0</span>, <span class="num">256</span>])
+<span class="cm">#                  이미지, 채널, 마스크, bins,  범위</span>
+<span class="cm"># 결과: 256x1 배열</span>
+
+<span class="cm"># Matplotlib으로 간편하게</span>
+plt.<span class="fn">hist</span>(img.<span class="fn">ravel</span>(), <span class="num">256</span>, [<span class="num">0</span>, <span class="num">256</span>])
+plt.<span class="fn">show</span>()
+
+<span class="cm"># BGR 각 채널 히스토그램</span>
+img_color = cv2.<span class="fn">imread</span>(<span class="str">'home.jpg'</span>)
+color = (<span class="str">'b'</span>, <span class="str">'g'</span>, <span class="str">'r'</span>)
+<span class="kw">for</span> i, col <span class="kw">in</span> <span class="fn">enumerate</span>(color):
+    histr = cv2.<span class="fn">calcHist</span>([img_color], [i], <span class="kw">None</span>, [<span class="num">256</span>], [<span class="num">0</span>,<span class="num">256</span>])
+    plt.<span class="fn">plot</span>(histr, color=col)
+plt.<span class="fn">xlim</span>([<span class="num">0</span>, <span class="num">256</span>])
+plt.<span class="fn">show</span>()</code></pre>
+    <div class="result-box">
+      <div class="result-text">→ X축=픽셀값(0~255), Y축=픽셀개수인 히스토그램 플롯<br>→ 컬러: 파란/초록/빨간 선으로 각 채널 분포 표시</div>
+    </div>
+  </div>
+
+  <div class="card important">
+    <div class="card-title pink">💻 히스토그램 균일화 (Histogram Equalization)</div>
+    <pre><code><span class="cm"># 방법 1: OpenCV (그레이스케일 전용)</span>
+img = cv2.<span class="fn">imread</span>(<span class="str">'wiki.jpg'</span>, <span class="num">0</span>)
+equ = cv2.<span class="fn">equalizeHist</span>(img)
+res = np.<span class="fn">hstack</span>((img, equ))   <span class="cm"># 나란히 붙이기</span>
+cv2.<span class="fn">imwrite</span>(<span class="str">'res.png'</span>, res)</code></pre>
+    <div class="result-box">
+      <div class="result-text">→ 어두운(밝은) 영역에 편중된 이미지를 전체 밝기 범위로 균일하게 분산 → 대비 향상</div>
+    </div>
+
+    <pre><code><span class="cm"># CLAHE: 지역 적응형 히스토그램 균일화</span>
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> cv2
+
+img = cv2.<span class="fn">imread</span>(<span class="str">'tsukuba_l.png'</span>, <span class="num">0</span>)
+
+clahe = cv2.<span class="fn">createCLAHE</span>(clipLimit=<span class="num">2.0</span>, tileGridSize=(<span class="num">8</span>,<span class="num">8</span>))
+cl1 = clahe.<span class="fn">apply</span>(img)
+cv2.<span class="fn">imwrite</span>(<span class="str">'clahe_2.jpg'</span>, cl1)</code></pre>
+    <div class="result-box">
+      <div class="result-text">→ 이미지를 8x8 타일로 나눠 각 타일별 히스토그램 균일화 → 과잉 밝기 없이 대비 향상</div>
+    </div>
+    <div class="em-box">
+      <strong>equalizeHist vs CLAHE:</strong><br>
+      전역(equalizeHist): 전체 이미지 한번에 균일화 → 국소 영역 과잉보정 가능<br>
+      CLAHE: 작은 타일 단위 균일화 + 클리핑 제한 → 더 자연스러운 결과
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 2D 히스토그램 (HSV - Hue+Saturation)</div>
+    <pre><code>img = cv2.<span class="fn">imread</span>(<span class="str">'home.jpg'</span>)
+hsv = cv2.<span class="fn">cvtColor</span>(img, cv2.COLOR_BGR2HSV)
+
+<span class="cm"># channels=[0,1]: H,S 두 채널</span>
+<span class="cm"># bins=[180,256]: H→180, S→256</span>
+hist = cv2.<span class="fn">calcHist</span>([hsv], [<span class="num">0</span>,<span class="num">1</span>], <span class="kw">None</span>,
+                    [<span class="num">180</span>,<span class="num">256</span>], [<span class="num">0</span>,<span class="num">180</span>,<span class="num">0</span>,<span class="num">256</span>])
+
+plt.<span class="fn">imshow</span>(hist, interpolation=<span class="str">'nearest'</span>)
+plt.<span class="fn">show</span>()</code></pre>
+  </div>
+</div>
+
+<!-- ===================== 1.4.9 ===================== -->
+<div id="s149" class="section">
+  <div class="chapter-header">
+    <span class="chapter-num">1.4.9</span>
+    <span class="chapter-title">Template Matching + Hough Transform + Image Gradients + Canny</span>
+  </div>
+
+  <div class="card highlight">
+    <div class="card-title">📌 Image Gradients (이미지 그래디언트)</div>
+    <pre><code><span class="kw">import</span> cv2
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> matplotlib <span class="kw">import</span> pyplot <span class="kw">as</span> plt
+
+img = cv2.<span class="fn">imread</span>(<span class="str">'dave.jpg'</span>, <span class="num">0</span>)
+
+<span class="cm"># Laplacian: 2차 미분</span>
+laplacian = cv2.<span class="fn">Laplacian</span>(img, cv2.CV_64F)
+
+<span class="cm"># Sobel: 1차 미분 (x방향, y방향)</span>
+sobelx = cv2.<span class="fn">Sobel</span>(img, cv2.CV_64F, <span class="num">1</span>, <span class="num">0</span>, ksize=<span class="num">5</span>)  <span class="cm"># x방향</span>
+sobely = cv2.<span class="fn">Sobel</span>(img, cv2.CV_64F, <span class="num">0</span>, <span class="num">1</span>, ksize=<span class="num">5</span>)  <span class="cm"># y방향</span></code></pre>
+    <div class="warn-box">uint8로 저장하면 음수 기울기(엣지)가 0이 되어 손실됨 → CV_64F로 받고 절댓값 변환!</div>
+    <pre><code><span class="cm"># 올바른 방법: 절댓값 취해서 uint8 변환</span>
+sobelx64f = cv2.<span class="fn">Sobel</span>(img, cv2.CV_64F, <span class="num">1</span>, <span class="num">0</span>, ksize=<span class="num">5</span>)
+abs_sobel = np.<span class="fn">absolute</span>(sobelx64f)
+sobel_8u = np.<span class="fn">uint8</span>(abs_sobel)</code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 Canny Edge Detection</div>
+    <pre><code><span class="kw">import</span> cv2
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> matplotlib <span class="kw">import</span> pyplot <span class="kw">as</span> plt
+
+img = cv2.<span class="fn">imread</span>(<span class="str">'messi5.jpg'</span>, <span class="num">0</span>)
+edges = cv2.<span class="fn">Canny</span>(img, <span class="num">100</span>, <span class="num">200</span>)
+<span class="cm">#            입력, minVal, maxVal</span>
+
+plt.<span class="fn">subplot</span>(<span class="num">121</span>), plt.<span class="fn">imshow</span>(img, cmap=<span class="str">'gray'</span>)
+plt.<span class="fn">title</span>(<span class="str">'Original Image'</span>)
+plt.<span class="fn">subplot</span>(<span class="num">122</span>), plt.<span class="fn">imshow</span>(edges, cmap=<span class="str">'gray'</span>)
+plt.<span class="fn">title</span>(<span class="str">'Edge Image'</span>)
+plt.<span class="fn">show</span>()</code></pre>
+    <div class="result-box">
+      <div class="result-text">→ 4단계: 가우시안 노이즈 제거 → 강도 그래디언트 계산 → 비최대 억제 → 히스테리시스 임계처리<br>→ 얇은 선으로 된 엣지 이미지 출력</div>
+    </div>
+    <div class="em-box">
+      <strong>Canny 4단계:</strong><br>
+      1. 5x5 가우시안 필터로 노이즈 제거<br>
+      2. Sobel 필터로 x·y 방향 그래디언트 계산, 방향 결정<br>
+      3. 비최대 억제(Non-max suppression): 그래디언트 방향에서 로컬 최대값만 유지<br>
+      4. 히스테리시스: maxVal 이상=확실한 엣지, minVal 이하=제거, 사이=연결여부로 판단
+    </div>
+  </div>
+
+  <div class="card important">
+    <div class="card-title pink">💻 Template Matching (템플릿 매칭)</div>
+    <pre><code><span class="kw">import</span> cv2
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> matplotlib <span class="kw">import</span> pyplot <span class="kw">as</span> plt
+
+img = cv2.<span class="fn">imread</span>(<span class="str">'messi5.jpg'</span>, <span class="num">0</span>)
+img2 = img.<span class="fn">copy</span>()
+template = cv2.<span class="fn">imread</span>(<span class="str">'template.jpg'</span>, <span class="num">0</span>)
+w, h = template.<span class="var">shape</span>[::-<span class="num">1</span>]
+
+<span class="cm"># 6가지 매칭 방법</span>
+methods = [<span class="str">'cv2.TM_CCOEFF'</span>, <span class="str">'cv2.TM_CCOEFF_NORMED'</span>, <span class="str">'cv2.TM_CCORR'</span>,
+           <span class="str">'cv2.TM_CCORR_NORMED'</span>, <span class="str">'cv2.TM_SQDIFF'</span>, <span class="str">'cv2.TM_SQDIFF_NORMED'</span>]
+
+<span class="kw">for</span> meth <span class="kw">in</span> methods:
+    img = img2.<span class="fn">copy</span>()
+    method = <span class="fn">eval</span>(meth)
+
+    res = cv2.<span class="fn">matchTemplate</span>(img, template, method)
+    min_val, max_val, min_loc, max_loc = cv2.<span class="fn">minMaxLoc</span>(res)
+
+    <span class="cm"># SQDIFF 계열은 최솟값이 최적 매칭</span>
+    <span class="kw">if</span> method <span class="kw">in</span> [cv2.TM_SQDIFF, cv2.TM_SQDIFF_NORMED]:
+        top_left = min_loc
+    <span class="kw">else</span>:
+        top_left = max_loc
+    bottom_right = (top_left[<span class="num">0</span>] + w, top_left[<span class="num">1</span>] + h)
+
+    cv2.<span class="fn">rectangle</span>(img, top_left, bottom_right, <span class="num">255</span>, <span class="num">2</span>)</code></pre>
+    <div class="result-box">
+      <div class="result-text">→ 입력(W×H) + 템플릿(w×h) → 결과 이미지 크기 = (W-w+1, H-h+1)<br>→ 각 픽셀 = 해당 위치 패치와 템플릿의 유사도<br>→ 최적 위치에 사각형 표시</div>
+    </div>
+    <div class="warn-box">TM_SQDIFF, TM_SQDIFF_NORMED: 최솟값=최적 / 나머지: 최댓값=최적</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 여러 객체 탐지 (임계처리 사용)</div>
+    <pre><code>img_rgb = cv2.<span class="fn">imread</span>(<span class="str">'mario.png'</span>)
+img_gray = cv2.<span class="fn">cvtColor</span>(img_rgb, cv2.COLOR_BGR2GRAY)
+template = cv2.<span class="fn">imread</span>(<span class="str">'mario_coin.png'</span>, <span class="num">0</span>)
+w, h = template.<span class="var">shape</span>[::-<span class="num">1</span>]
+
+res = cv2.<span class="fn">matchTemplate</span>(img_gray, template, cv2.TM_CCOEFF_NORMED)
+threshold = <span class="num">0.8</span>
+loc = np.<span class="fn">where</span>(res >= threshold)  <span class="cm"># 임계값 이상인 위치 모두</span>
+
+<span class="kw">for</span> pt <span class="kw">in</span> <span class="fn">zip</span>(*loc[::-<span class="num">1</span>]):       <span class="cm"># (x,y) 순서로</span>
+    cv2.<span class="fn">rectangle</span>(img_rgb, pt, (pt[<span class="num">0</span>]+w, pt[<span class="num">1</span>]+h), (<span class="num">0</span>,<span class="num">0</span>,<span class="num">255</span>), <span class="num">2</span>)</code></pre>
+    <div class="result-box">
+      <div class="result-text">→ 마리오 화면의 코인을 모두 찾아 빨간 사각형으로 표시</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">💻 Hough Line Transform</div>
+      <pre><code>img = cv2.<span class="fn">imread</span>(<span class="str">'dave.jpg'</span>)
+gray = cv2.<span class="fn">cvtColor</span>(img, cv2.COLOR_BGR2GRAY)
+edges = cv2.<span class="fn">Canny</span>(gray, <span class="num">50</span>, <span class="num">150</span>, apertureSize=<span class="num">3</span>)
+
+<span class="cm"># 표준 허프 변환 → (ρ, θ) 반환</span>
+lines = cv2.<span class="fn">HoughLines</span>(edges, <span class="num">1</span>, np.pi/<span class="num">180</span>, <span class="num">200</span>)
+<span class="cm">#    이진이미지, ρ정밀도, θ정밀도, 임계값(최소투표수)</span>
+
+<span class="kw">for</span> rho, theta <span class="kw">in</span> lines[<span class="num">0</span>]:
+    a = np.<span class="fn">cos</span>(theta)
+    b = np.<span class="fn">sin</span>(theta)
+    x0, y0 = a*rho, b*rho
+    x1 = <span class="fn">int</span>(x0 + <span class="num">1000</span>*(-b))
+    y1 = <span class="fn">int</span>(y0 + <span class="num">1000</span>*(a))
+    x2 = <span class="fn">int</span>(x0 - <span class="num">1000</span>*(-b))
+    y2 = <span class="fn">int</span>(y0 - <span class="num">1000</span>*(a))
+    cv2.<span class="fn">line</span>(img, (x1,y1), (x2,y2), (<span class="num">0</span>,<span class="num">0</span>,<span class="num">255</span>), <span class="num">2</span>)
+
+<span class="cm"># 확률적 허프 (선분 양 끝점 직접 반환)</span>
+lines = cv2.<span class="fn">HoughLinesP</span>(edges, <span class="num">1</span>, np.pi/<span class="num">180</span>, <span class="num">100</span>,
+    minLineLength=<span class="num">100</span>, maxLineGap=<span class="num">10</span>)
+<span class="kw">for</span> x1,y1,x2,y2 <span class="kw">in</span> lines[<span class="num">0</span>]:
+    cv2.<span class="fn">line</span>(img, (x1,y1), (x2,y2), (<span class="num">0</span>,<span class="num">255</span>,<span class="num">0</span>), <span class="num">2</span>)</code></pre>
+    <div class="result-box">
+      <div class="result-text">→ 이진 엣지 이미지에서 직선 검출 → 검출된 선을 원본에 그림</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 Hough Circle Transform</div>
+    <pre><code><span class="kw">import</span> cv2
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+img = cv2.<span class="fn">imread</span>(<span class="str">'opencv_logo.png'</span>, <span class="num">0</span>)
+img = cv2.<span class="fn">medianBlur</span>(img, <span class="num">5</span>)   <span class="cm"># 노이즈 제거</span>
+cimg = cv2.<span class="fn">cvtColor</span>(img, cv2.COLOR_GRAY2BGR)
+
+circles = cv2.<span class="fn">HoughCircles</span>(img,
+    cv2.HOUGH_GRADIENT, <span class="num">1</span>, <span class="num">20</span>,
+    param1=<span class="num">50</span>, param2=<span class="num">30</span>,
+    minRadius=<span class="num">0</span>, maxRadius=<span class="num">0</span>)
+<span class="cm"># dp=1(해상도비), minDist=20(원 중심 간 최소 거리)</span>
+<span class="cm"># param1=Canny상위임계값, param2=투표임계값</span>
+
+circles = np.<span class="fn">uint16</span>(np.<span class="fn">around</span>(circles))
+<span class="kw">for</span> i <span class="kw">in</span> circles[<span class="num">0</span>,:]:
+    cv2.<span class="fn">circle</span>(cimg, (i[<span class="num">0</span>],i[<span class="num">1</span>]), i[<span class="num">2</span>], (<span class="num">0</span>,<span class="num">255</span>,<span class="num">0</span>), <span class="num">2</span>)  <span class="cm"># 원</span>
+    cv2.<span class="fn">circle</span>(cimg, (i[<span class="num">0</span>],i[<span class="num">1</span>]), <span class="num">2</span>, (<span class="num">0</span>,<span class="num">0</span>,<span class="num">255</span>), <span class="num">3</span>)    <span class="cm"># 중심</span>
+
+cv2.<span class="fn">imshow</span>(<span class="str">'detected circles'</span>, cimg)
+cv2.<span class="fn">waitKey</span>(<span class="num">0</span>)
+cv2.<span class="fn">destroyAllWindows</span>()</code></pre>
+    <div class="result-box">
+      <div class="result-text">→ 이미지에서 원 검출 → 초록 원과 빨간 중심점으로 표시</div>
+    </div>
+  </div>
+  </div>
+
+  <div class="card tip">
+    <div class="card-title green">💡 허프 변환 핵심 이론</div>
+    <p>선: ρ = x·cosθ + y·sinθ (극좌표 표현)<br>
+    축적기(accumulator)에서 투표 → 최대 투표 위치 = 검출된 선/원</p>
+    <p>HoughLines: (ρ,θ) 반환 → 직접 선 좌표 계산 필요<br>
+    HoughLinesP (확률적): 선분의 양 끝점(x1,y1,x2,y2) 직접 반환 → 더 간편</p>
+  </div>
+</div>
+
+</div><!-- .container -->
+
+<script>
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+
+  const map = {
+    'overview':'전체 개요','s121':'1.2.1','s122':'1.2.2','s123':'1.2.3',
+    's124':'1.2.4','s125':'1.2.5','s131':'1.3.1','s132':'1.3.2',
+    's141':'1.4.1','s142':'1.4.2','s143':'1.4.3','s144':'1.4.4',
+    's145':'1.4.5','s147':'1.4.7','s149':'1.4.9'
+  };
+  document.querySelectorAll('.nav-tab').forEach(t => {
+    if(t.textContent.includes(map[id] || '')) t.classList.add('active');
+  });
+
+  // scroll to top
+  document.querySelector('.container').scrollTop = 0;
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
