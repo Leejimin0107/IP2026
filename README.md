@@ -7,6 +7,7 @@
 ## Homework 2
 ![Homework 2](./Homework2.gif)
 ## [Homework 3](./Homework3.ipynb)
+![Homework 3](./Homework3.png)
 ## [Homework 4]
 ## [Homework 5]
 
